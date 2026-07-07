@@ -1,4 +1,4 @@
-package unap.epis.dp2.mibolsillo.ui.theme
+package unap.epis.dp2.mibolsillo.presentation.common.theme
 
 import androidx.compose.ui.graphics.Color
 

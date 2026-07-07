@@ -11,7 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import unap.epis.dp2.mibolsillo.ui.theme.MiBolsilloTheme
+import unap.epis.dp2.mibolsillo.presentation.common.theme.MiBolsilloTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
