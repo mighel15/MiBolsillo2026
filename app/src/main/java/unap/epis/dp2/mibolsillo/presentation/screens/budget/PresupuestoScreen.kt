@@ -8,6 +8,10 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,6 +30,13 @@ fun PresupuestoScreen(
     mes: String = "julio",
     onConfigurarClick: () -> Unit = {}
 ) {
+
+    var isConfiguration by rememberSaveable { mutableStateOf(false) }
+
+    if(isConfiguration)
+    {
+
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -37,34 +48,42 @@ fun PresupuestoScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text("Presupuestos de $mes", style = MaterialTheme.typography.titleLarge)
-            IconButton(onClick = onConfigurarClick) {
+            IconButton(onClick = {isConfiguration = !isConfiguration}) {
                 Icon(Icons.Filled.Settings, contentDescription = "Configurar presupuesto")
             }
         }
+
         Spacer(Modifier.height(16.dp))
 
-        presupuestos.forEach { p ->
-            PresupuestoRow(p)
-            Spacer(Modifier.height(14.dp))
+        if(isConfiguration)
+        {
+            Text("Configuración")
         }
+        else
+        {
+            presupuestos.forEach { p ->
+                PresupuestoRow(p)
+                Spacer(Modifier.height(14.dp))
+            }
 
-        val excedidas = presupuestos.filter { it.excedido }
-        if (excedidas.isNotEmpty()) {
-            Card(
-                colors = CardDefaults.cardColors(containerColor = Color(0xFFFCEBEB)),
-                shape = RoundedCornerShape(10.dp)
-            ) {
-                Row(
-                    modifier = Modifier.padding(12.dp),
-                    verticalAlignment = Alignment.CenterVertically
+            val excedidas = presupuestos.filter { it.excedido }
+            if (excedidas.isNotEmpty()) {
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFFCEBEB)),
+                    shape = RoundedCornerShape(10.dp)
                 ) {
-                    Icon(Icons.Filled.Warning, contentDescription = null, tint = Color(0xFFA32D2D))
-                    Spacer(Modifier.width(8.dp))
-                    Text(
-                        "Superaste el presupuesto de " + excedidas.joinToString { it.categoria.nombre },
-                        color = Color(0xFFA32D2D),
-                        style = MaterialTheme.typography.bodySmall
-                    )
+                    Row(
+                        modifier = Modifier.padding(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(Icons.Filled.Warning, contentDescription = null, tint = Color(0xFFA32D2D))
+                        Spacer(Modifier.width(8.dp))
+                        Text(
+                            "Superaste el presupuesto de " + excedidas.joinToString { it.categoria.nombre },
+                            color = Color(0xFFA32D2D),
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
                 }
             }
         }

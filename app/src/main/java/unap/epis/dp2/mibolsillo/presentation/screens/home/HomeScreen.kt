@@ -38,7 +38,7 @@ import unap.epis.dp2.mibolsillo.util.soles
 @Composable
 fun HomeScreen(
     movimientos: List<Movimiento> = DatosDemo.movimientos,
-    nombreUsuario: String = "Camila",
+    nombreUsuario: String = "Anthony Steve",
     mes: String = "Julio",
     modifier: Modifier = Modifier
 ) {

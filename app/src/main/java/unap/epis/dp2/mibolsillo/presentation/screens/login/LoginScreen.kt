@@ -27,12 +27,11 @@ fun LoginScreen(
     navController: NavController? = null,
     onLogin: (email: String, password: String) -> Unit = { _, _ -> },
     onRegistro: (nombre: String, email: String, password: String) -> Unit = { _, _, _ -> },
-    error: String? = null,
-    modifier: Modifier = Modifier
 ) {
     var modoRegistro by remember { mutableStateOf(false) }
     var nombre by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
+    var error by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
 
@@ -97,7 +96,7 @@ fun LoginScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        if (error != null) {
+        if (error.isNotEmpty()) {
             Spacer(Modifier.height(8.dp))
             Text(error, color = Color(0xFFA32D2D), style = MaterialTheme.typography.bodySmall)
         }
@@ -106,7 +105,12 @@ fun LoginScreen(
 
         Button(
             onClick = {
-                navController?.navigate(Screens.Home.route)
+
+                if(email == "maceituno@unap.edu.pe" && password == "123456")
+                    navController?.navigate(Screens.Main.route)
+                else
+                    error = "Correo o contrasena incorrectos"
+
                 if (modoRegistro) onRegistro(nombre, email, password) else onLogin(email, password)
             },
             modifier = Modifier
@@ -141,8 +145,3 @@ private fun LoginScreenPreview() {
     MaterialTheme { LoginScreen() }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun LoginScreenErrorPreview() {
-    MaterialTheme { LoginScreen(error = "Correo o contrasena incorrectos") }
-}
