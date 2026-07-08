@@ -4,12 +4,16 @@ package unap.epis.dp2.mibolsillo.presentation.screens.budget
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -19,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import unap.epis.dp2.mibolsillo.presentation.model.Categoria
 import unap.epis.dp2.mibolsillo.presentation.model.DatosDemo
 import unap.epis.dp2.mibolsillo.presentation.model.PresupuestoCategoria
 import unap.epis.dp2.mibolsillo.util.soles
@@ -31,11 +36,13 @@ fun PresupuestoScreen(
     onConfigurarClick: () -> Unit = {}
 ) {
 
-    var isConfiguration by rememberSaveable { mutableStateOf(false) }
+    var isConfiguration by remember { mutableStateOf(false) }
 
     if(isConfiguration)
     {
-
+        ConfigurationPresupuesto(
+            onVolver = {isConfiguration = false}
+        )
     }
     Column(
         modifier = Modifier
@@ -86,6 +93,78 @@ fun PresupuestoScreen(
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun ConfigurationPresupuesto(
+    categorias: List<Categoria> = DatosDemo.categorias,
+    limitesPrevios: Map<Int, Double> = DatosDemo.presupuestos.associate { it.categoria.id to it.montoLimite },
+    mes: String = "julio",
+    onVolver: () -> Unit = {},
+    onCopiarMesAnterior: () -> Unit = {},
+    onGuardar: (Map<Int, Double>) -> Unit = {},
+    modifier: Modifier = Modifier
+) {
+    val limites = remember {
+        mutableStateMapOf<Int, String>().apply {
+            categorias.forEach { cat -> this[cat.id] = limitesPrevios[cat.id]?.toString() ?: "" }
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(20.dp)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            IconButton(onClick = onVolver) {
+                Icon(Icons.Filled.ArrowBack, contentDescription = "Volver")
+            }
+            Text("Configurar $mes", style = MaterialTheme.typography.titleLarge)
+        }
+        Spacer(Modifier.height(4.dp))
+        Text(
+            "Define el limite maximo por categoria para este mes.",
+            style = MaterialTheme.typography.bodySmall,
+            color = androidx.compose.ui.graphics.Color.Gray
+        )
+        Spacer(Modifier.height(16.dp))
+
+        categorias.forEach { cat ->
+            OutlinedTextField(
+                value = limites[cat.id] ?: "",
+                onValueChange = { limites[cat.id] = it },
+                label = { Text(cat.nombre) },
+                singleLine = true,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 12.dp)
+            )
+        }
+
+        OutlinedButton(
+            onClick = onCopiarMesAnterior,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp)
+        ) {
+            Text("Copiar presupuesto de junio")
+        }
+
+        Button(
+            onClick = {
+                val resultado = limites.mapNotNull { (id, valor) ->
+                    valor.toDoubleOrNull()?.let { id to it }
+                }.toMap()
+                onGuardar(resultado)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp)
+        ) {
+            Text("Guardar configuracion")
         }
     }
 }
