@@ -40,7 +40,9 @@ android {
 }
 
 dependencies {
-
+    //Navegacion
+    implementation("androidx.navigation:navigation-compose:2.7.3")
+    //Diseño
     implementation("androidx.compose.material3:material3:1.2.1")
     implementation("androidx.compose.material:material-icons-extended:1.6.4")
     implementation("androidx.activity:activity-compose:1.9.0")

@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import unap.epis.dp2.mibolsillo.presentation.common.theme.MiBolsilloTheme
+import unap.epis.dp2.mibolsillo.presentation.navigation.NavGraph
 import unap.epis.dp2.mibolsillo.presentation.screens.home.HomeScreen
 import unap.epis.dp2.mibolsillo.presentation.screens.login.LoginScreen
 
@@ -21,11 +22,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MiBolsilloTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    LoginScreen(
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+//                Scaffold(modifier = Modifier.fillMaxSize()) {
+                NavGraph()
+
             }
         }
     }

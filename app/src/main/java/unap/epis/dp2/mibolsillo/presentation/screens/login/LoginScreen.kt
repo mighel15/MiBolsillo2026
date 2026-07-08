@@ -19,9 +19,12 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import unap.epis.dp2.mibolsillo.presentation.navigation.Screens
 
 @Composable
 fun LoginScreen(
+    navController: NavController? = null,
     onLogin: (email: String, password: String) -> Unit = { _, _ -> },
     onRegistro: (nombre: String, email: String, password: String) -> Unit = { _, _, _ -> },
     error: String? = null,
@@ -103,6 +106,7 @@ fun LoginScreen(
 
         Button(
             onClick = {
+                navController?.navigate(Screens.Home.route)
                 if (modoRegistro) onRegistro(nombre, email, password) else onLogin(email, password)
             },
             modifier = Modifier
