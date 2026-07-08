@@ -47,7 +47,7 @@ fun HomeScreen(
     val balance = totalIngresos - totalGastos
 
     Column(
-        modifier = modifier.padding(20.dp)
+        modifier = modifier.padding(20.dp).fillMaxSize()
     ) {
         Text("Hola, $nombreUsuario", style = MaterialTheme.typography.headlineSmall, color = Color.Gray)
 
