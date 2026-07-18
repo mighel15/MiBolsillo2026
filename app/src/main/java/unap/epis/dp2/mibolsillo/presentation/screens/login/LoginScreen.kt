@@ -20,20 +20,25 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import unap.epis.dp2.mibolsillo.presentation.common.components.LoadingDialog
 import unap.epis.dp2.mibolsillo.presentation.navigation.Screens
 
 @Composable
 fun LoginScreen(
+    viewModel: LoginViewModel = LoginViewModel(),
     navController: NavController? = null,
     onLogin: (email: String, password: String) -> Unit = { _, _ -> },
     onRegistro: (nombre: String, email: String, password: String) -> Unit = { _, _, _ -> },
 ) {
-    var modoRegistro by remember { mutableStateOf(false) }
-    var nombre by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var error by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    val state by viewModel.uiState.collectAsState()
+
+    val nombre by viewModel.nombre.collectAsState()
+    val email by viewModel.email.collectAsState()
+    val password by viewModel.password.collectAsState()
     var passwordVisible by remember { mutableStateOf(false) }
+
+    var modoRegistro by remember { mutableStateOf(false) }
+    var error by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -60,7 +65,7 @@ fun LoginScreen(
         if (modoRegistro) {
             OutlinedTextField(
                 value = nombre,
-                onValueChange = { nombre = it },
+                onValueChange = { viewModel.onNameChange(it) },
                 label = { Text("Nombre") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
@@ -70,7 +75,7 @@ fun LoginScreen(
 
         OutlinedTextField(
             value = email,
-            onValueChange = { email = it },
+            onValueChange = { viewModel.onEmailChange(it) },
             label = { Text("Correo electronico") },
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
@@ -80,7 +85,7 @@ fun LoginScreen(
 
         OutlinedTextField(
             value = password,
-            onValueChange = { password = it },
+            onValueChange = { viewModel.onPasswordChange(it) },
             label = { Text("Contrasena") },
             singleLine = true,
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
@@ -96,6 +101,8 @@ fun LoginScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
+        LoadingDialog(isLoading = state is LoginUiState.Loading)
+
         if (error.isNotEmpty()) {
             Spacer(Modifier.height(8.dp))
             Text(error, color = Color(0xFFA32D2D), style = MaterialTheme.typography.bodySmall)
@@ -105,13 +112,15 @@ fun LoginScreen(
 
         Button(
             onClick = {
+                viewModel.doLogin()
 
-                if(email == "maceituno@unap.edu.pe" && password == "123456")
-                    navController?.navigate(Screens.Main.route)
-                else
-                    error = "Correo o contrasena incorrectos"
 
-                if (modoRegistro) onRegistro(nombre, email, password) else onLogin(email, password)
+//                if(email == "maceituno@unap.edu.pe" && password == "123456")
+//                    navController?.navigate(Screens.Main.route)
+//                else
+//                    error = "Correo o contrasena incorrectos"
+//
+//                if (modoRegistro) onRegistro(nombre, email, password) else onLogin(email, password)
             },
             modifier = Modifier
                 .fillMaxWidth()
